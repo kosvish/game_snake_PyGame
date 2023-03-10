@@ -33,6 +33,15 @@ length = 1
 snake_block = 30
 snake_step = 30
 
+# food cords
+
+foodx = random.randrange(0, WIDTH - snake_block)
+foody = random.randrange(0, HEIGHT - snake_block)
+
+
+
+
+
 
 
 
@@ -43,6 +52,9 @@ while run:
     clock.tick(FPS)
 
     screen.fill("blue")
+
+    pygame.draw.rect(screen, "green", [foodx, foody,
+                                       snake_block, snake_block])
 
     x1 += x1_change
     y1 += y1_change
