@@ -33,6 +33,9 @@ length = 1
 snake_block = 30
 snake_step = 30
 
+
+
+
 run = True
 
 while run:
@@ -70,6 +73,14 @@ while run:
             elif event.key == pygame.K_RIGHT:
                 x1_change = snake_step
                 y1_change = 0
+
+            elif event.key == pygame.K_DOWN:
+                x1_change = 0
+                y1_change = snake_step
+
+            elif event.key == pygame.K_UP:
+                x1_change = 0
+                y1_change = -snake_step
 
 
 pygame.quit()
