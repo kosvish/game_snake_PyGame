@@ -37,11 +37,30 @@ run = True
 
 while run:
 
+    clock.tick(FPS)
+
+    screen.fill("blue")
+
     x1 += x1_change
     y1 += y1_change
 
+    snake_head = [x1, y1]
+    snake_list.append(snake_head)
+
+    if len(snake_list) > length:
+        del snake_list[0]
+
+    for x in snake_list:
+        pygame.draw.rect(screen, "black", [x[0], x[1],
+                                           snake_block, snake_block])
+
+    pygame.display.update()
+    pygame.display.flip()
 
     for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:
+            run = False
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
@@ -51,3 +70,6 @@ while run:
             elif event.key == pygame.K_RIGHT:
                 x1_change = snake_step
                 y1_change = 0
+
+
+pygame.quit()
