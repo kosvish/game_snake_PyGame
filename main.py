@@ -9,6 +9,9 @@ WIDTH = 800
 HEIGHT = 600
 FPS = 5
 
+pygame.display.set_caption("Змейка")
+clock = pygame.time.Clock()
+
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 # music and img dir
@@ -41,6 +44,11 @@ tail_images = [
     pygame.image.load(path.join(img_dir, "TaleT.png")).convert(),
 ]
 
+body_images = [
+    pygame.image.load(path.join(img_dir, "Body.png")).convert(),
+    pygame.image.load(path.join(img_dir, "BodyUD.png")).convert(),
+]
+
 game_over_img = pygame.image.load(path.join(img_dir, "LoseScreen.png"))
 game_over_img = pygame.transform.scale(game_over_img, (WIDTH, HEIGHT))
 game_over_img_rect = game_over_img.get_rect()
@@ -52,11 +60,6 @@ pygame.mixer.music.set_volume(0.1)
 
 am = pygame.mixer.Sound(path.join(music_dir, 'eat_food.mp3'))
 am.set_volume(0.5)
-
-# Game Settings
-
-pygame.display.set_caption("Змейка")
-clock = pygame.time.Clock()
 
 # Snake cords
 
@@ -71,7 +74,7 @@ x1_change = 0
 
 y1_change = 0
 
-length = 1
+length = 2
 
 # Snake Size
 
@@ -82,6 +85,9 @@ snake_step = 30
 
 foodx = random.randrange(0, WIDTH - snake_block)
 foody = random.randrange(0, HEIGHT - snake_block)
+
+# message
+
 
 
 def eating_check(xcor, ycor, foodx, foody):
@@ -121,8 +127,7 @@ def game_loop():
     y1 = HEIGHT / 2
     x1_change = 0
     y1_change = 0
-    length = 1
-    snake_list = []
+    length = 2
     snake_head = [x1, y1]
 
     # food variables
@@ -138,6 +143,8 @@ def game_loop():
     game_close = False
 
     i = 0
+
+    a = 0
 
     while run:
         while game_close:
@@ -174,7 +181,7 @@ def game_loop():
                     run = False
                     game_close = False
 
-                elif event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
                         run = False
                         game_close = False
@@ -213,16 +220,20 @@ def game_loop():
         draw_head(i, snake_list)
         draw_tail(i, snake_list)
 
-        if len(snake_list) > length:
+        if len(snake_list) + 1 > length:
             del snake_list[0]
 
         for x in snake_list:
-            # pygame.draw.rect(screen, "black", [x[0], x[1],
-            #                                    snake_block, snake_block])
-            snake_img = pygame.image.load(path.join(img_dir, 'Body.png')).convert()
-            snake = pygame.transform.scale(snake_img, (snake_block, snake_block))
-            snake.set_colorkey("white")
-            screen.blit(snake, (x[0], x[1]))
+            if a == 0:
+                snake_img = pygame.image.load(path.join(img_dir, 'Body.png')).convert()
+                snake = pygame.transform.scale(snake_img, (snake_block, snake_block))
+                snake.set_colorkey("white")
+                screen.blit(snake, (x[0], x[1]))
+            elif a == 1:
+                snake_img = pygame.image.load(path.join(img_dir, 'BodyUD.png')).convert()
+                snake = pygame.transform.scale(snake_img, (snake_block, snake_block))
+                snake.set_colorkey("white")
+                screen.blit(snake, (x[0], x[1]))
 
         for x in snake_list[:-1]:
             if x == snake_head:
@@ -251,21 +262,25 @@ def game_loop():
                     x1_change = -snake_step
                     y1_change = 0
                     i = 1
+                    a = 0
 
                 elif event.key == pygame.K_RIGHT:
                     x1_change = snake_step
                     y1_change = 0
                     i = 0
+                    a = 0
 
                 elif event.key == pygame.K_DOWN:
                     x1_change = 0
                     y1_change = snake_step
                     i = 3
+                    a = 1
 
                 elif event.key == pygame.K_UP:
                     x1_change = 0
                     y1_change = -snake_step
                     i = 2
+                    a = 1
     pygame.quit()
     quit()
 
