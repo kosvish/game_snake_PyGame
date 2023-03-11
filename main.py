@@ -9,8 +9,25 @@ WIDTH = 800
 HEIGHT = 600
 FPS = 5
 
-music_dir = path.join(path.dirname(__file__), 'music')
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
+# music and img dir
+music_dir = path.join(path.dirname(__file__), 'music')
+img_dir = path.join(path.dirname(__file__), 'img')
+
+# img variables
+bg = pygame.image.load(path.join(img_dir, 'grass.jpg')).convert()
+bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
+bg_rect = bg.get_rect()
+
+food_img = [
+    pygame.image.load(path.join(img_dir, 'bread.png')).convert(),
+    pygame.image.load(path.join(img_dir, 'cake.png')).convert(),
+    pygame.image.load(path.join(img_dir, 'crab_meat.png')).convert(),
+    pygame.image.load(path.join(img_dir, 'sushi.png')).convert(),
+]
+
+# music variables
 pygame.mixer.music.load(path.join(music_dir, 'main_music.mp3'))
 pygame.mixer.music.play()
 pygame.mixer.music.set_volume(0.1)
@@ -19,7 +36,7 @@ am = pygame.mixer.Sound(path.join(music_dir, 'eat_food.mp3'))
 am.set_volume(0.5)
 
 # Game Settings
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
 pygame.display.set_caption("Змейка")
 clock = pygame.time.Clock()
 
@@ -78,6 +95,10 @@ def game_loop():
     foodx = random.randrange(0, WIDTH - snake_block)
     foody = random.randrange(0, HEIGHT - snake_block)
 
+    food = pygame.transform.scale(random.choice(food_img), (snake_block, snake_block))
+    food.set_colorkey("black")
+    food_rect = food.get_rect(x=foodx, y=foody)
+
     run = True
 
     game_close = False
@@ -130,10 +151,14 @@ def game_loop():
         clock.tick(FPS)
 
         screen.fill("blue")
+        screen.blit(bg, bg_rect)
 
         # drawing food
-        pygame.draw.rect(screen, "green", [foodx, foody,
-                                           snake_block, snake_block])
+
+        screen.blit(food, food_rect)
+
+        # pygame.draw.rect(screen, "green", [foodx, foody,
+        #                                    snake_block, snake_block])
 
         create_mes(f'Текущий счёт: {length - 1}', 'grey', 0, 0, "comicsans", 25)
 
@@ -166,6 +191,9 @@ def game_loop():
         if eating_check(x1, y1, foodx, foody):
             foodx = random.randrange(0, WIDTH - snake_block)
             foody = random.randrange(0, HEIGHT - snake_block)
+            food = pygame.transform.scale(random.choice(food_img), (30, 30))
+            food.set_colorkey("black")
+            food_rect = food.get_rect(x=foodx, y=foody)
             length += 1
             am.play()
 
