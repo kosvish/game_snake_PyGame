@@ -27,6 +27,13 @@ food_img = [
     pygame.image.load(path.join(img_dir, 'sushi.png')).convert(),
 ]
 
+head_images = [
+    pygame.image.load(path.join(img_dir, "HeadR.png")).convert(),
+    pygame.image.load(path.join(img_dir, "HeadL.png")).convert(),
+    pygame.image.load(path.join(img_dir, "HeadB.png")).convert(),
+    pygame.image.load(path.join(img_dir, "HeadT.png")).convert(),
+]
+
 # music variables
 pygame.mixer.music.load(path.join(music_dir, 'main_music.mp3'))
 pygame.mixer.music.play()
@@ -102,6 +109,7 @@ def game_loop():
     run = True
 
     game_close = False
+    i = 0
 
     while run:
         while game_close:
@@ -181,8 +189,12 @@ def game_loop():
             del snake_list[0]
 
         for x in snake_list:
-            pygame.draw.rect(screen, "black", [x[0], x[1],
-                                               snake_block, snake_block])
+            # pygame.draw.rect(screen, "black", [x[0], x[1],
+            #                                    snake_block, snake_block])
+            snake_img = pygame.image.load(path.join(img_dir, 'Body.png')).convert()
+            snake = pygame.transform.scale(snake_img, (snake_block, snake_block))
+            snake.set_colorkey("white")
+            screen.blit(snake, (x[0], x[1]))
 
         for x in snake_list[:-1]:
             if x == snake_head:
@@ -210,19 +222,22 @@ def game_loop():
                 if event.key == pygame.K_LEFT:
                     x1_change = -snake_step
                     y1_change = 0
+                    i = 1
 
                 elif event.key == pygame.K_RIGHT:
                     x1_change = snake_step
                     y1_change = 0
+                    i = 0
 
                 elif event.key == pygame.K_DOWN:
                     x1_change = 0
                     y1_change = snake_step
+                    i = 2
 
                 elif event.key == pygame.K_UP:
                     x1_change = 0
                     y1_change = -snake_step
-
+                    i = 3
     pygame.quit()
     quit()
 
