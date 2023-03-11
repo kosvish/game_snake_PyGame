@@ -34,6 +34,17 @@ head_images = [
     pygame.image.load(path.join(img_dir, "HeadT.png")).convert(),
 ]
 
+tail_images = [
+    pygame.image.load(path.join(img_dir, "TaleR.png")).convert(),
+    pygame.image.load(path.join(img_dir, "TaleL.png")).convert(),
+    pygame.image.load(path.join(img_dir, "TaleB.png")).convert(),
+    pygame.image.load(path.join(img_dir, "TaleT.png")).convert(),
+]
+
+game_over_img = pygame.image.load(path.join(img_dir, "LoseScreen.png"))
+game_over_img = pygame.transform.scale(game_over_img, (WIDTH, HEIGHT))
+game_over_img_rect = game_over_img.get_rect()
+
 # music variables
 pygame.mixer.music.load(path.join(music_dir, 'main_music.mp3'))
 pygame.mixer.music.play()
@@ -64,7 +75,7 @@ length = 1
 
 # Snake Size
 
-snake_block = 30
+snake_block = 50
 snake_step = 30
 
 # food cords
@@ -87,6 +98,22 @@ def create_mes(msg, color, x, y, font_name, size):
     screen.blit(mes, [x, y])
 
 
+def draw_head(i, snake_list):
+    snake_head_img = head_images[i]
+    snake_head = pygame.transform.scale(snake_head_img, (snake_block, snake_block))
+    snake_head.set_colorkey("white")
+    snake_head_rect = snake_head.get_rect(x=snake_list[-1][0], y=snake_list[-1][1])
+    screen.blit(snake_head, snake_head_rect)
+
+
+def draw_tail(i, snake_list):
+    snake_tail_img = tail_images[i]
+    snake_tail = pygame.transform.scale(snake_tail_img, (snake_block, snake_block))
+    snake_tail.set_colorkey("white")
+    snake_tail_rect = snake_tail.get_rect(x=snake_list[0][0], y=snake_list[0][1])
+    screen.blit(snake_tail, snake_tail_rect)
+
+
 def game_loop():
     # snake variables
 
@@ -102,20 +129,19 @@ def game_loop():
     foodx = random.randrange(0, WIDTH - snake_block)
     foody = random.randrange(0, HEIGHT - snake_block)
 
-    food = pygame.transform.scale(random.choice(food_img), (snake_block, snake_block))
+    food = pygame.transform.scale(random.choice(food_img), (50, 50))
     food.set_colorkey("black")
     food_rect = food.get_rect(x=foodx, y=foody)
 
     run = True
 
     game_close = False
+
     i = 0
 
     while run:
         while game_close:
-            screen.fill("red")
-            create_mes('''Вы проиграли!''', "black", 200, 200,
-                       "chalkduster.ttf", 70)
+            screen.blit(game_over_img, game_over_img_rect)
 
             create_mes(f'Ваш счёт: {length - 1}', "black", 20, 400, "times", 35)
 
@@ -184,6 +210,8 @@ def game_loop():
 
         snake_head = [x1, y1]
         snake_list.append(snake_head)
+        draw_head(i, snake_list)
+        draw_tail(i, snake_list)
 
         if len(snake_list) > length:
             del snake_list[0]
@@ -232,12 +260,12 @@ def game_loop():
                 elif event.key == pygame.K_DOWN:
                     x1_change = 0
                     y1_change = snake_step
-                    i = 2
+                    i = 3
 
                 elif event.key == pygame.K_UP:
                     x1_change = 0
                     y1_change = -snake_step
-                    i = 3
+                    i = 2
     pygame.quit()
     quit()
 
